@@ -11,6 +11,11 @@ connectToMongoDB()
 
 // middlewares
 app.use(express.json())
+app.use(
+   express.urlencoded({
+      extended: true,
+   }),
+)
 
 app.use((req, res, next) => {
    logger.info(`Received ${req.method} request to ${req.url}`)
@@ -25,8 +30,11 @@ app.use((req, res, next) => {
 
 // app.use("/api/search", searchRouter)
 
-app.get("/", (req, res) => {
-   res.send("It is working")
+app.get("/health", (req, res) => {
+   res.status(200).json({
+      success: true,
+      message: "Restaurant chatbot API running",
+   })
 })
 
 app.use(errorHandler)
@@ -34,7 +42,7 @@ app.use(errorHandler)
 async function startServer() {
    try {
       app.listen(PORT, () => {
-         logger.info(`Search service running at port: ${PORT}`)
+         logger.info(`Restaurant Chatbot running at port: ${PORT}`)
       })
    } catch (error) {
       logger.error("Failed to connect to server: ", error)

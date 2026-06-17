@@ -1,0 +1,8 @@
+const SESSION_STATES = {
+   MAIN_MENU: "MAIN_MENU",
+   SELECTING_ITEMS: "SELECTING_ITEMS",
+}
+
+module.exports = {
+   SESSION_STATES,
+}
