@@ -3,6 +3,7 @@ const express = require("express")
 const errorHandler = require("./middlewares/errorHandler")
 const connectToMongoDB = require("./config/mongoDB")
 const logger = require("./utils/logger")
+const chatbotRouter = require("./routes/chatbot.route")
 
 const app = express()
 const PORT = process.env.PORT || 3002
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 
 // implement redis caching
 
-// app.use("/api/search", searchRouter)
+app.use("/api/chat", chatbotRouter)
 
 app.get("/health", (req, res) => {
    res.status(200).json({

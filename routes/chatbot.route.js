@@ -1,11 +1,9 @@
 const express = require("express")
+const { chat, selectFood } = require("../controllers/chatbot.controller")
 
-const { body } = require("express-validator")
+const chatbotRouter = express.Router()
 
-const { chat } = require("../controllers/chatbot.controller")
+chatbotRouter.post("/", chat)
+chatbotRouter.post("/selectfood", selectFood)
 
-const router = express.Router()
-
-router.post("/", chat)
-
-module.exports = router
+module.exports = chatbotRouter

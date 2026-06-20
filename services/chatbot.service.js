@@ -114,7 +114,11 @@ const processMessage = async (deviceId, message) => {
    }
 }
 
-const handleFoodSelection = async (message, seesion) => {
+const handleFoodSelection = async (deviceId, message) => {
+   let session = await Session.findOne({
+      deviceId,
+   })
+
    if (session.state === SESSION_STATES.SELECTING_ITEMS) {
       const selectedItem = menu.find((item) => item.id === Number(message))
 
@@ -160,4 +164,5 @@ const handleFoodSelection = async (message, seesion) => {
 
 module.exports = {
    processMessage,
+   handleFoodSelection,
 }
