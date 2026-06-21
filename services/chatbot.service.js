@@ -1,6 +1,8 @@
 const Session = require("../models/session.model")
 const User = require("../models/user.model")
 
+const { createOrderFromCart, getOrderHistory } = require("./order.service")
+
 const menu = require("../utils/menu")
 
 const { SESSION_STATES } = require("../utils/constant")
@@ -110,6 +112,64 @@ const processMessage = async (deviceId, message) => {
 
       return {
          response: getFoodMenu(),
+      }
+   }
+
+   if (message === "98") {
+      const orders = await getOrderHistory(deviceId)
+
+      if (!orders.length) {
+         return {
+            response: "No previous orders found.",
+         }
+      }
+
+      let response = "Order History\n\n"
+
+      orders.forEach((order, index) => {
+         response += `Order ${index + 1}\n`
+
+         order.items.forEach((item) => {
+            response += `${item.name} x${item.quantity}\n`
+         })
+
+         response += `Total: ₦${order.totalAmount}\n`
+
+         response += `Status: ${order.paymentStatus}\n\n`
+      })
+
+      return {
+         response,
+      }
+   }
+
+   if (message === "99") {
+      if (session.cart.length === 0) {
+         return {
+            response: "No order to place.",
+         }
+      }
+
+      const order = await createOrderFromCart(deviceId, session.cart)
+
+      session.cart = []
+
+      session.state = SESSION_STATES.MAIN_MENU
+
+      await session.save()
+
+      return {
+         response:
+            `Order created successfully.\n\n` +
+            `Order ID: ${order._id}\n` +
+            `Total: ₦${order.totalAmount}\n\n` +
+            `Reply PAY to proceed with payment.`,
+
+         orderId: order._id,
+
+         totalAmount: order.totalAmount,
+
+         paymentRequired: true,
       }
    }
 }

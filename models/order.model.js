@@ -37,6 +37,11 @@ const orderSchema = new mongoose.Schema(
          type: Date,
          default: null,
       },
+
+      paidAt: {
+         type: Date,
+         default: null,
+      },
    },
    {
       timestamps: true,
